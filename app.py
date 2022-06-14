@@ -56,9 +56,15 @@ def append():
     except:
         ext = 'None'
     try:
-        ip = str(flask.request.headers["X-Forwarded-For"])
+        # Overide if Cf-Connecting-Ip is present
+        if flask.request.headers.get('Cf-Connecting-Ip'):
+            ip = str(flask.request.headers.get('Cf-Connecting-Ip'))
+        elif flask.request.headers.get('X-Forwarded-For'):
+            ip = str(flask.request.headers["X-Forwarded-For"])
+        else:
+            ip = str(flask.request.remote_addr)
     except:
-        ip = str(flask.request.remote_addr)
+        ip = 'None'
     try:
         ua = str(flask.request.headers["User-Agent"])
     except:
@@ -105,9 +111,15 @@ def post():
     except:
         ext = 'None'
     try:
-        ip = str(flask.request.headers["X-Forwarded-For"])
+        # Overide if Cf-Connecting-Ip is present
+        if flask.request.headers.get('Cf-Connecting-Ip'):
+            ip = str(flask.request.headers.get('Cf-Connecting-Ip'))
+        elif flask.request.headers.get('X-Forwarded-For'):
+            ip = str(flask.request.headers["X-Forwarded-For"])
+        else:
+            ip = str(flask.request.remote_addr)
     except:
-        ip = str(flask.request.remote_addr)
+        ip = 'None'
     try:
         ua = str(flask.request.headers["User-Agent"])
     except:
