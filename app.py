@@ -145,21 +145,32 @@ def post():
 # Return the index page
 def index():
     # Make a response
-    resp = flask.make_response("""<html>
-    <head>
-    <title>Visitor Logger</title>
-    </head>
-    <body>
-    <h1>Visitor Logger</h1>
-    <p>This is a simple visitor logger for the website.</p>
-    <p>You can use the following endpoints:</p>
-    <ul>
-    <li>/append - Append a new visitor to the DB</li>
-    <li>/post - Append a new visitor to the DB using POST</li>
-    <li>/clean - Clean the DB</li>
-    </ul>
-    </body>
-    </html>""")
+    # If in debug mode, return this
+    if app.debug:
+        resp = flask.make_response("""<html>
+        <head>
+        <title>Visitor Logger</title>
+        </head>
+        <body>
+        <h1>Visitor Logger</h1>
+        <p>This is a simple visitor logger for the website.</p>
+        <p>You can use the following endpoints:</p>
+        <ul>
+        <li>/append - Append a new visitor to the DB</li>
+        <li>/post - Append a new visitor to the DB using POST</li>
+        <li>/clean - Clean the DB</li>
+        </ul>
+        </body>
+        </html>""")
+    else:
+        resp = flask.make_response("""<html>
+        <head>
+        <title>Hello, world!</title>
+        </head>
+        <body>
+        <h1>Production</h1>
+        </body>
+        </html>""")
     # Allow Cross Origin Resource Sharing
     resp.headers['Access-Control-Allow-Origin'] = "*"
     # Return the data
