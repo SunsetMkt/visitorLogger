@@ -17,7 +17,6 @@ function generateUUID() {
 }
 
 // Get the visitor ID from the cookie
-// This must be done with pure JavaScript, not with jQuery
 // Try to use the cookie if it exists, otherwise generate a new one
 function getVisitorID() {
     var visitorID = "";
