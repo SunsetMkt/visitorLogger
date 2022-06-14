@@ -26,6 +26,23 @@ db.commit()
 db.close()
 
 
+@app.route('/clean')
+# DB Cleanup
+# Keep the latest 500000 records
+def clean():
+    # Create a DB connection
+    db = sqlite3.connect('visitor.db', check_same_thread=False)
+    # Create a cursor
+    c = db.cursor()
+    # Delete all records except the latest 500000
+    c.execute("DELETE FROM visitors WHERE rowid NOT IN (SELECT rowid FROM visitors ORDER BY rowid DESC LIMIT 500000)")
+    # Commit the changes
+    db.commit()
+    # Close the DB connection
+    db.close()
+    return 'Cleaned'
+
+
 @app.route("/append")
 # Append a new visitor to the DB, any method can be used
 def append():
@@ -139,6 +156,7 @@ def index():
     <ul>
     <li>/append - Append a new visitor to the DB</li>
     <li>/post - Append a new visitor to the DB using POST</li>
+    <li>/clean - Clean the DB</li>
     </ul>
     </body>
     </html>""")
