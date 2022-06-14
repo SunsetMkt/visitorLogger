@@ -18,6 +18,7 @@ function generateUUID() {
 
 // Get the visitor ID from the cookie
 // Try to use the cookie if it exists, otherwise generate a new one
+// This cookie is available in any subdomain
 function getVisitorID() {
     var visitorID = "";
     var cookieName = "visitorID";
@@ -32,7 +33,9 @@ function getVisitorID() {
     }
     if (visitorID == "") {
         visitorID = generateUUID();
-        document.cookie = cookieName + "=" + visitorID + "; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/";
+        // Get Second Level Domain
+        var domain = window.location.hostname;
+        document.cookie = cookieName + "=" + visitorID + "; expires=Fri, 31 Dec 9999 23:59:59 GMT; domain=" + domain + ";";
     }
     return visitorID;
 }
