@@ -208,6 +208,7 @@ def index():
         <li>/clean - Clean the DB</li>
         <li>/getdb - Get the DB</li>
         <li>/query - Query the DB</li>
+        <li>/report - Create HTML report</li>
         </ul>
         </body>
         </html>""")
@@ -269,6 +270,64 @@ def query():
         db.close()
         # Make a response
         resp = flask.make_response(flask.jsonify(data), 200)
+        # Allow Cross Origin Resource Sharing
+        resp.headers['Access-Control-Allow-Origin'] = "*"
+        # Return the data
+        return resp
+    else:
+        return flask.make_response("Invalid secret")
+
+
+@app.route("/report", methods=['GET'])
+# Create HTML report
+# Arguments: secret, hours
+def report():
+    # Make a response
+    SECRET = SECRET_KEY
+    if flask.request.values.get('secret') == SECRET:
+        # Get the data from the request
+        try:
+            hours = int(flask.request.values.get('hours'))
+        except:
+            hours = 1
+        # Header
+        html = '<html><head>'
+        # charset
+        html += '<meta charset="utf-8">'
+        # title
+        html += '<title>Visitor Logger</title>'
+        # Append Style to the HTML report
+        html += '<style>table, th, td {border: 1px solid black;border-collapse: collapse;}</style>'
+        # Append JS filter to the HTML report
+        html += '<script>function filterTable() {var input, filter, table, tr, td, i;input = document.getElementById("myInput");filter = input.value.toUpperCase();table = document.getElementById("myTable");tr = table.getElementsByTagName("tr");for (i = 0; i < tr.length; i++) {td = tr[i].getElementsByTagName("td")[0];if (td) {if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {tr[i].style.display = "";} else {tr[i].style.display = "none";}}} }</script>'
+        # Body
+        html += '</head><body>'
+        # Title
+        html += '<h1>Visitor Logger</h1>'
+        # Append the filter input to the HTML report
+        html += '<input type="text" id="myInput" onkeyup="filterTable()" placeholder="Search for UUID..">'
+        # Append the table to the HTML report
+        html += '<table id="myTable"><tr><th>UUID</th><th>IP</th><th>Time</th><th>User Agent</th><th>Referrer</th><th>Extension</th><th>Header</th></tr>'
+        # Create a DB connection
+        db = sqlite3.connect(DATABASE, check_same_thread=False)
+        # Create a cursor
+        c = db.cursor()
+        # Query the DB
+        c.execute(
+            """SELECT * FROM visitors WHERE time > datetime('now', '-%s hours')""" % hours)
+        # Get the data
+        data = c.fetchall()
+        # Close the DB connection
+        db.close()
+        # Loop through the data
+        for row in data:
+            # Append the row to the HTML report
+            html += '<tr><td>' + str(row[0]) + '</td><td>' + str(row[1]) + '</td><td>' + str(row[2]) + '</td><td>' + str(
+                row[3]) + '</td><td>' + str(row[4]) + '</td><td>' + str(row[5]) + '</td><td>' + str(row[6]) + '</td></tr>'
+        # Append the closing tags to the HTML report
+        html += '</table></body></html>'
+        # Make a response
+        resp = flask.make_response(html)
         # Allow Cross Origin Resource Sharing
         resp.headers['Access-Control-Allow-Origin'] = "*"
         # Return the data
