@@ -16,11 +16,10 @@ function generateUUID() {
     });
 }
 
-/**
- * 获取当前 URL 二级域名
- * 如果当前是 IP 地址，则直接返回 IP Address
- * https://www.jianshu.com/p/c96b0993b22e
- */
+
+// Get SLD from current URL
+// If IP Address or localhost, return directly
+// https://www.jianshu.com/p/c96b0993b22e
 function getSubdomain() {
     try {
         let subdomain = ''
@@ -32,7 +31,7 @@ function getSubdomain() {
         const reg = new RegExp(`(^|;)\\s*${key}=12345`)
         const ipAddressReg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
 
-        // 若为 IP 地址、localhost，则直接返回
+        // If IP Address or localhost, return
         if (ipAddressReg.test(domain) || domain === 'localhost') {
             return domain
         }
