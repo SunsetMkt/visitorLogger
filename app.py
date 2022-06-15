@@ -1,14 +1,27 @@
 # visitorLogger - A simple visitor logger for the website
+# https://github.com/lwd-temp/visitorLogger
 # Flask Backend
 import sqlite3
 import time
 
 import flask
 
+# Default Secret Key
+SECRET_KEY = 'developmentkey'
+# Default Database Name
+DATABASE = 'visitor.db'
+# Default Port
+PORT = 80
+# Default Host
+HOST = '0.0.0.0'
+# Debug Mode
+DEBUG = False
+
+
 # Create the application object
 app = flask.Flask(__name__)
 # Create a DB connection
-db = sqlite3.connect('visitor.db', check_same_thread=False)
+db = sqlite3.connect(DATABASE, check_same_thread=False)
 # Create a cursor
 c = db.cursor()
 # Create a table
@@ -28,18 +41,40 @@ db.close()
 
 @app.route('/clean')
 # DB Cleanup
-# Keep the latest 500000 records
+# Arguments: secret, secret is the secret key
+#            keep, number of days to keep
 def clean():
+    # Use default SECRET
+    SECRET = SECRET_KEY
+    # Get the secret
+    secret = flask.request.args.get('secret', None)
+    # Check if the secret is correct
+    if secret != SECRET:
+        return 'Invalid secret'
+    # Get the number of days to keep
+    keep = flask.request.args.get('keep', None)
+    # Check if the number of days to keep is valid
+    if keep is None or not keep.isdigit():
+        return 'Invalid keep'
+    # Convert the number of days to keep to an integer
+    keep = int(keep)
+    # Get the current time
+    now = time.time()
+    # Get the time of the day
+    today = time.strftime('%Y-%m-%d', time.localtime(now))
+    # Get the time of the day minus the number of days to keep
+    yesterday = time.strftime('%Y-%m-%d', time.localtime(now - (86400 * keep)))
     # Create a DB connection
-    db = sqlite3.connect('visitor.db', check_same_thread=False)
+    db = sqlite3.connect(DATABASE, check_same_thread=False)
     # Create a cursor
     c = db.cursor()
-    # Delete all records except the latest 500000
-    c.execute("DELETE FROM visitors WHERE rowid NOT IN (SELECT rowid FROM visitors ORDER BY rowid DESC LIMIT 500000)")
+    # Delete all entries older than the number of days to keep
+    c.execute("DELETE FROM visitors WHERE time < ?", (yesterday,))
     # Commit the changes
     db.commit()
     # Close the DB connection
     db.close()
+    # Return a success message
     return 'Cleaned'
 
 
@@ -79,7 +114,7 @@ def append():
         header = 'None'
     currtime = time.strftime("%Y-%m-%d %H:%M:%S")
     # Create a DB connection
-    db = sqlite3.connect('visitor.db', check_same_thread=False)
+    db = sqlite3.connect(DATABASE, check_same_thread=False)
     # Create a cursor
     c = db.cursor()
     # Insert the data
@@ -134,7 +169,7 @@ def post():
         header = 'None'
     currtime = time.strftime("%Y-%m-%d %H:%M:%S")
     # Create a DB connection
-    db = sqlite3.connect('visitor.db', check_same_thread=False)
+    db = sqlite3.connect(DATABASE, check_same_thread=False)
     # Create a cursor
     c = db.cursor()
     # Insert the data
@@ -189,7 +224,7 @@ def index():
     return resp
 
 
-# Run the application, no debug
+# Run the application
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=80, debug=False)
+    app.run(host=HOST, port=PORT, debug=DEBUG)
 # End of file
