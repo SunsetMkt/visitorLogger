@@ -94,6 +94,12 @@ function getUserInfo() {
     userInfo.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     userInfo.time = new Date().toISOString();
     userInfo.href = window.location.href;
+    userInfo.pageTitle = document.title;
+    userInfo.referrer = document.referrer;
+    userInfo.viewport = {
+        width: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
+        height: Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+    };
     // Check for WeChat or QQ or any JSBridge
     if (window.WeixinJSBridge) {
         userInfo.wechat = true;
@@ -138,11 +144,26 @@ function getGeoLocationFromIP() {
     return json;
 }
 
+// Get Geo Location via Sohu API
+// Place <script src="https://pv.sohu.com/cityjson?ie=utf-8"></script> before this script
+// Get the user's location if returnCitySN exists, should not cause ReferenceError
+function getGeoLocationViaSohu() {
+    var geoLocation = "unloaded";
+    if (typeof (returnCitySN) == "undefined" || returnCitySN == null) {
+
+    } else {
+        geoLocation = returnCitySN;
+    }
+    return geoLocation;
+}
+
+
 // Generate ext data from getUserInfo()
 function getExtData() {
     var extData = {};
     extData.userInfo = getUserInfo();
     extData.test = "test";
+    extData.returnCitySN = getGeoLocationViaSohu();
     return extData;
 }
 
