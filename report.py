@@ -1,17 +1,33 @@
 # visitorLogger - A simple visitor logger for the website
 # https://github.com/lwd-temp/visitorLogger
 # HTML Report Generator
-import sqlite3
 import os
+import sqlite3
+
+import htmlmin
+
+
+def minifyHTML(html):
+    # Minify the HTML report with HTMLMin
+    return htmlmin.minify(html, remove_empty_space=True)
 
 
 def createFullReport(db):
     # Create the HTML report
-    html = '<html><head><title>Visitor Logger</title></head><body><h1>Visitor Logger</h1>'
+    # Header
+    html = '<html><head>'
+    # charset
+    html += '<meta charset="utf-8">'
+    # title
+    html += '<title>Visitor Logger</title>'
     # Append Style to the HTML report
     html += '<style>table, th, td {border: 1px solid black;border-collapse: collapse;}</style>'
     # Append JS filter to the HTML report
     html += '<script>function filterTable() {var input, filter, table, tr, td, i;input = document.getElementById("myInput");filter = input.value.toUpperCase();table = document.getElementById("myTable");tr = table.getElementsByTagName("tr");for (i = 0; i < tr.length; i++) {td = tr[i].getElementsByTagName("td")[0];if (td) {if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {tr[i].style.display = "";} else {tr[i].style.display = "none";}}} }</script>'
+    # Body
+    html += '</head><body>'
+    # Title
+    html += '<h1>Visitor Logger</h1>'
     # Append the filter input to the HTML report
     html += '<input type="text" id="myInput" onkeyup="filterTable()" placeholder="Search for UUID..">'
     # Append the table to the HTML report
@@ -41,8 +57,10 @@ if __name__ == "__main__":
     filename = str(os.sys.argv[2])
     # Create the HTML report
     html = createFullReport(db)
-    # Write the HTML report to a file
-    with open(filename, 'w') as f:
+    # Minify
+    html = minifyHTML(html)
+    # Write the HTML report to a file with UTF-8 encoding
+    with open(filename, 'w', encoding='utf-8') as f:
         f.write(html)
     # Return a success message
     print('Created')
