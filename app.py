@@ -206,6 +206,8 @@ def index():
         <li>/append - Append a new visitor to the DB</li>
         <li>/post - Append a new visitor to the DB using POST</li>
         <li>/clean - Clean the DB</li>
+        <li>/getdb - Get the DB</li>
+        <li>/query - Query the DB</li>
         </ul>
         </body>
         </html>""")
@@ -222,6 +224,57 @@ def index():
     resp.headers['Access-Control-Allow-Origin'] = "*"
     # Return the data
     return resp
+
+
+@app.route("/getdb", methods=['GET'])
+# Return the DB file
+# Check SECRET
+def getdb():
+    # Make a response
+    SECRET = SECRET_KEY
+    if flask.request.values.get('secret') == SECRET:
+        resp = flask.make_response(open(DATABASE, 'rb').read())
+        resp.headers['Content-Type'] = 'application/octet-stream'
+        resp.headers['Content-Disposition'] = 'attachment; filename=db.sqlite'
+        # Allow Cross Origin Resource Sharing
+        resp.headers['Access-Control-Allow-Origin'] = "*"
+        # Return the data
+        return resp
+    else:
+        return flask.make_response("Invalid secret")
+
+
+@app.route("/query", methods=['GET'])
+# Query DB for insert time
+# Arguments: secret, hours
+def query():
+    # Make a response
+    SECRET = SECRET_KEY
+    if flask.request.values.get('secret') == SECRET:
+        # Get the data from the request
+        try:
+            hours = int(flask.request.values.get('hours'))
+        except:
+            hours = 1
+        # Create a DB connection
+        db = sqlite3.connect(DATABASE, check_same_thread=False)
+        # Create a cursor
+        c = db.cursor()
+        # Query the DB
+        c.execute(
+            """SELECT * FROM visitors WHERE time > datetime('now', '-%s hours')""" % hours)
+        # Get the data
+        data = c.fetchall()
+        # Close the DB connection
+        db.close()
+        # Make a response
+        resp = flask.make_response(flask.jsonify(data), 200)
+        # Allow Cross Origin Resource Sharing
+        resp.headers['Access-Control-Allow-Origin'] = "*"
+        # Return the data
+        return resp
+    else:
+        return flask.make_response("Invalid secret")
 
 
 # Run the application
