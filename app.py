@@ -16,6 +16,10 @@ PORT = 80
 HOST = '0.0.0.0'
 # Debug Mode
 DEBUG = False
+# Default API URL in JavaScript
+API_URL = 'http://example.com/append'
+# JS Path
+JS = "visitorLogger.js"
 
 
 # Create the application object
@@ -209,6 +213,7 @@ def index():
         <li>/getdb - Get the DB</li>
         <li>/query - Query the DB</li>
         <li>/report - Create HTML report</li>
+        <li>/js - Get the JS file</li>
         </ul>
         </body>
         </html>""")
@@ -334,6 +339,23 @@ def report():
         return resp
     else:
         return flask.make_response("Invalid secret")
+
+
+@app.route("/js", methods=['GET'])
+# Return the JS file
+# Replace apiURL with API_URL
+def js():
+    # Read the JS file
+    js = open(JS, 'r').read()
+    # Replace the API URL
+    js = js.replace('http://localhost/append', API_URL)
+    # Make a response
+    resp = flask.make_response(js)
+    resp.headers['Content-Type'] = 'application/javascript'
+    # Allow Cross Origin Resource Sharing
+    resp.headers['Access-Control-Allow-Origin'] = "*"
+    # Return the data
+    return resp
 
 
 # Run the application
