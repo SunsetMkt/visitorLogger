@@ -440,6 +440,8 @@ def clean():
     c.execute("DELETE FROM visitors WHERE time < ?", (yesterday,))
     # Commit the changes
     db.commit()
+    # Vacuum the DB
+    c.execute("VACUUM")
     # Close the DB connection
     db.close()
     # Return a success message
