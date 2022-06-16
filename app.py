@@ -6,6 +6,7 @@ import time
 
 import flask
 
+#######CONFIGURATION########
 # Default Secret Key
 SECRET_KEY = 'developmentkey'
 # Default Database Name
@@ -22,6 +23,7 @@ API_URL = 'http://example.com/append'
 JS = "visitorLogger.js"
 # GzipBomb Anti-Attack
 GZIP_BOMB = False
+#######CONFIGURATION########
 
 
 # Return GzipBomb when permission denied
