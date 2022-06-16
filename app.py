@@ -491,10 +491,18 @@ def append():
     # Close the DB connection
     db.close()
     # Make a response
-    resp = flask.make_response(flask.jsonify(
-        {"uuid": uuid, "ip": ip, "time": currtime, "ua": ua, "referrer": referrer, "ext": ext, "header": header}), 200)
-    # Allow Cross Origin Resource Sharing
-    resp.headers['Access-Control-Allow-Origin'] = "*"
+    # If debug
+    if app.debug:
+        resp = flask.make_response(flask.jsonify(
+            {"uuid": uuid, "ip": ip, "time": currtime, "ua": ua, "referrer": referrer, "ext": ext, "header": header}), 200)
+        # Allow Cross Origin Resource Sharing
+        resp.headers['Access-Control-Allow-Origin'] = "*"
+    else:
+        resp = flask.make_response("", 200)
+        # Mime javascript
+        resp.mimetype = 'application/javascript'
+        # Allow Cross Origin Resource Sharing
+        resp.headers['Access-Control-Allow-Origin'] = "*"
     # Return the data
     return resp
 
@@ -546,10 +554,18 @@ def post():
     # Close the DB connection
     db.close()
     # Make a response
-    resp = flask.make_response(flask.jsonify(
-        {"uuid": uuid, "ip": ip, "time": currtime, "ua": ua, "referrer": referrer, "ext": ext, "header": header}), 200)
-    # Allow Cross Origin Resource Sharing
-    resp.headers['Access-Control-Allow-Origin'] = "*"
+    # If debug
+    if app.debug:
+        resp = flask.make_response(flask.jsonify(
+            {"uuid": uuid, "ip": ip, "time": currtime, "ua": ua, "referrer": referrer, "ext": ext, "header": header}), 200)
+        # Allow Cross Origin Resource Sharing
+        resp.headers['Access-Control-Allow-Origin'] = "*"
+    else:
+        resp = flask.make_response("", 200)
+        # Mime javascript
+        resp.mimetype = 'application/javascript'
+        # Allow Cross Origin Resource Sharing
+        resp.headers['Access-Control-Allow-Origin'] = "*"
     # Return the data
     return resp
 
