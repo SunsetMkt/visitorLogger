@@ -411,6 +411,7 @@ db.close()
 # DB Cleanup
 # Arguments: secret, secret is the secret key
 #            keep, number of days to keep
+#            vacuum, if 1, vacuum the DB
 def clean():
     # Use default SECRET
     SECRET = SECRET_KEY
@@ -441,7 +442,8 @@ def clean():
     # Commit the changes
     db.commit()
     # Vacuum the DB
-    c.execute("VACUUM")
+    if flask.request.args.get('vacuum', None) == '1':
+        c.execute("VACUUM")
     # Close the DB connection
     db.close()
     # Return a success message
