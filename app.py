@@ -745,6 +745,16 @@ def favicon():
     return resp
 
 
+@app.route("/robots.txt")
+# Block all robots
+def robots():
+    # Make a response
+    resp = flask.make_response('''User-agent: *
+Disallow: /''')
+    # Return the data
+    return resp
+
+
 # Handle any other requests(404)
 # Anti-Attack with GzipBomb
 @app.errorhandler(404)
