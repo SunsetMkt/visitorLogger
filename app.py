@@ -500,7 +500,7 @@ def append():
         # Allow Cross Origin Resource Sharing
         resp.headers['Access-Control-Allow-Origin'] = "*"
     else:
-        resp = flask.make_response("", 200)
+        resp = flask.make_response("{}", 200)
         # Mime javascript
         resp.mimetype = 'application/javascript'
         # Allow Cross Origin Resource Sharing
@@ -563,7 +563,7 @@ def post():
         # Allow Cross Origin Resource Sharing
         resp.headers['Access-Control-Allow-Origin'] = "*"
     else:
-        resp = flask.make_response("", 200)
+        resp = flask.make_response("{}", 200)
         # Mime javascript
         resp.mimetype = 'application/javascript'
         # Allow Cross Origin Resource Sharing
@@ -598,14 +598,8 @@ def index():
         </body>
         </html>""")
     else:
-        resp = flask.make_response("""<html>
-        <head>
-        <title>Hello, world!</title>
-        </head>
-        <body>
-        <h1>Production</h1>
-        </body>
-        </html>""")
+        # 418 I'm a teapot
+        resp = flask.make_response("I'm a teapot", 418)
     # Allow Cross Origin Resource Sharing
     resp.headers['Access-Control-Allow-Origin'] = "*"
     # Return the data
