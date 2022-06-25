@@ -28,3 +28,7 @@ This is a simple visitor logger for the website which is designed to track every
 
 This tool is designed to be used for educational purposes only. The author takes no responsibility for any damage caused by using this tool. Use at your own risk.
 
+## TODO
+
+Integrate with https://github.com/fingerprintjs/fingerprintjs
+
