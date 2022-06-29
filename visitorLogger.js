@@ -200,10 +200,10 @@
 
 
     // Generate ext data from getUserInfo()
-    function getExtData() {
+    function getExtData(ext) {
         var extData = {};
         extData.userInfo = getUserInfo();
-        extData.test = "test";
+        extData.ext = ext;
         extData.returnCitySN = getGeoLocationViaSohu();
         return extData;
     }
@@ -228,14 +228,14 @@
 
 
     // Send the data to the API
-    function sendData() {
-        var extData = getExtData();
+    function sendData(ext) {
+        var extData = getExtData(ext);
         var visitorID = getVisitorID();
         var json = apiCall(visitorID, extData);
         return json;
     }
 
     // Call the sendData function
-    sendData();
+    sendData("test");
 
 })();
