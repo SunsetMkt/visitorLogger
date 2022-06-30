@@ -397,9 +397,11 @@ c.execute("""CREATE TABLE IF NOT EXISTS visitors (
             uuid TEXT,
             ip TEXT,
             time TEXT,
-            ua TEXT,
+            method TEXT,
             referrer TEXT,
             ext TEXT,
+            body TEXT,
+            ua TEXT,
             header TEXT)""")
 # Commit the changes
 db.commit()
@@ -490,8 +492,8 @@ def append():
     # Create a cursor
     c = db.cursor()
     # Insert the data
-    c.execute("""INSERT INTO visitors VALUES (?,?,?,?,?,?,?)""",
-              (uuid, ip, currtime, ua, referrer, ext, header))
+    c.execute("""INSERT INTO visitors VALUES (?,?,?,?,?,?,?,?,?)""", (uuid, ip,
+              currtime, flask.request.method, referrer, ext, flask.request.data, ua, header))
     # Commit the changes
     db.commit()
     # Close the DB connection
@@ -553,8 +555,8 @@ def post():
     # Create a cursor
     c = db.cursor()
     # Insert the data
-    c.execute("""INSERT INTO visitors VALUES (?,?,?,?,?,?,?)""",
-              (uuid, ip, currtime, ua, referrer, ext, header))
+    c.execute("""INSERT INTO visitors VALUES (?,?,?,?,?,?,?,?,?)""", (uuid, ip,
+              currtime, flask.request.method, referrer, ext, flask.request.data, ua, header))
     # Commit the changes
     db.commit()
     # Close the DB connection
@@ -690,7 +692,7 @@ def report():
         # Append the filter input to the HTML report
         html += '<input type="text" id="myInput" onkeyup="filterTable()" placeholder="Search for UUID..">'
         # Append the table to the HTML report
-        html += '<table id="myTable"><tr><th>UUID</th><th>IP</th><th>Time</th><th>User Agent</th><th>Referrer</th><th>Extension</th><th>Header</th></tr>'
+        html += '<table id="myTable"><tr><th>UUID</th><th>IP</th><th>Time</th><th>Method</th><th>Referrer</th><th>Extension</th><th>Body</th><th>UA</th><th>Header</th></tr>'
         # Create a DB connection
         db = sqlite3.connect(DATABASE, check_same_thread=False)
         # Create a cursor
@@ -705,8 +707,8 @@ def report():
         # Loop through the data
         for row in data:
             # Append the row to the HTML report
-            html += '<tr><td>' + str(row[0]) + '</td><td>' + str(row[1]) + '</td><td>' + str(row[2]) + '</td><td>' + str(
-                row[3]) + '</td><td>' + str(row[4]) + '</td><td>' + str(row[5]) + '</td><td>' + str(row[6]) + '</td></tr>'
+            html += '<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>' % (
+                row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8])
         # Append the closing tags to the HTML report
         html += '</table></body></html>'
         # Make a response
