@@ -9,7 +9,7 @@
 (function () {
 
     // API URL
-    var apiURL = "http://localhost/append";
+    var apiURL = "https://replace.me/";
 
     // Generate a UUID
     function generateUUID() {
@@ -211,9 +211,10 @@
     // API Call
     // This sends the data to the API with GET
     // If it fails, it will try to load js file with data argument from the API
+    // Endpoint: apiURL + "append"
     function apiCallGet(visitorID, extData) {
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", apiURL + "?uuid=" + visitorID + "&ext=" + JSON.stringify(extData), false);
+        xhr.open("GET", apiURL + "append" + "?uuid=" + visitorID + "&ext=" + JSON.stringify(extData), false);
         xhr.send();
         if (xhr.status == 200) {
             var json = JSON.parse(xhr.responseText);
@@ -229,9 +230,10 @@
     // API Call
     // This sends the data to the API with POST
     // If it fails, fall back to GET
+    // Endpoint: apiURL + "post"
     function apiCallPost(visitorID, extData) {
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", apiURL, false);
+        xhr.open("POST", apiURL + "post", false);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhr.send("uuid=" + visitorID + "&ext=" + JSON.stringify(extData));
         if (xhr.status == 200) {

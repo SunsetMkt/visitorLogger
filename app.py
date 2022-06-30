@@ -18,7 +18,7 @@ HOST = '0.0.0.0'
 # Debug Mode
 DEBUG = False
 # Default API URL in JavaScript
-API_URL = 'http://example.com/append'
+API_URL = 'http://example.com/'
 # JS Path
 JS = "visitorLogger.js"
 # GzipBomb Anti-Attack
@@ -726,7 +726,7 @@ def js():
     # Read the JS file
     js = open(JS, 'r').read()
     # Replace the API URL
-    js = js.replace('http://localhost/append', API_URL)
+    js = js.replace('https://replace.me/', API_URL)
     # Make a response
     resp = flask.make_response(js)
     resp.headers['Content-Type'] = 'application/javascript'
