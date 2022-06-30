@@ -211,7 +211,7 @@
     // API Call
     // This sends the data to the API with GET
     // If it fails, it will try to load js file with data argument from the API
-    function apiCall(visitorID, extData) {
+    function apiCallGet(visitorID, extData) {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", apiURL + "?uuid=" + visitorID + "&ext=" + JSON.stringify(extData), false);
         xhr.send();
@@ -226,12 +226,28 @@
         }
     }
 
+    // API Call
+    // This sends the data to the API with POST
+    // If it fails, fall back to GET
+    function apiCallPost(visitorID, extData) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", apiURL, false);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.send("uuid=" + visitorID + "&ext=" + JSON.stringify(extData));
+        if (xhr.status == 200) {
+            var json = JSON.parse(xhr.responseText);
+            return json;
+        }
+        else {
+            return apiCallGet(visitorID, extData);
+        }
+    }
 
     // Send the data to the API
     function sendData(ext) {
         var extData = getExtData(ext);
         var visitorID = getVisitorID();
-        var json = apiCall(visitorID, extData);
+        var json = apiCallPost(visitorID, extData);
         return json;
     }
 
