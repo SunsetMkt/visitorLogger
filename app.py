@@ -661,7 +661,7 @@ def query():
         return permission_denied()
 
 
-@app.route("/report", methods=['GET'])
+# @app.route("/report", methods=['GET']) # XSS risks, disabled
 # Create HTML report
 # Arguments: secret, hours
 def report():
